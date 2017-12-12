@@ -156,16 +156,12 @@ const styles = StyleSheet.create({
     elevation: 0,
     flex: 1,
     flexDirection: 'row',
-    paddingLeft: 10,
-    paddingRight: 10,
     paddingBottom: 8,
     paddingTop: 8
   },
   leftActionContainer: {
-    paddingLeft: 38
   },
   rightActionContainer: {
-    paddingRight: 38
   },
   centerActionContainer: {
     paddingLeft: 10,
