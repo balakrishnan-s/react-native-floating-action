@@ -281,7 +281,7 @@ FloatingAction.defaultProps = {
   buttonColor: '#1253bc',
   overlayColor: 'rgba(68, 68, 68, 0.6)',
   position: 'right',
-  distanceToEdge: 30
+  distanceToEdge: 15
 };
 
 const styles = StyleSheet.create({
