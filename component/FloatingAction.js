@@ -181,7 +181,8 @@ class FloatingAction extends Component {
       position,
       overrideWithAction,
       actionsTextBackground,
-      actionsTextColor
+      actionsTextColor,
+      distanceToEdge,
     } = this.props;
     const { active } = this.state;
 
@@ -196,7 +197,13 @@ class FloatingAction extends Component {
       })
     };
 
-    const actionsStyles = [styles.actions, styles[`${position}Actions`], animatedActionsStyle];
+    const propStyles = { bottom: 56 };
+    if (['left', 'right'].indexOf(position) > -1) {
+      propStyles[position] = distanceToEdge;
+      propStyles.bottom = propStyles.bottom + distanceToEdge;
+    }
+
+    const actionsStyles = [styles.actions, styles[`${position}Actions`], animatedActionsStyle, propStyles];
 
     if (this.state.active) {
       actionsStyles.push(styles[`${position}ActionsVisible`]);
@@ -287,25 +294,23 @@ FloatingAction.defaultProps = {
 const styles = StyleSheet.create({
   actions: {
     position: 'absolute',
-    bottom: 85,
+    width: 56,
     zIndex: 10
   },
   rightActions: {
-    alignItems: 'flex-end',
-    right: -1000 // this magic number will make always disspear the text from screen
+    alignItems: 'center',
   },
   leftActions: {
-    alignItems: 'flex-start',
-    left: -1000 // this magic number will make always disspear the text from screen
+    alignItems: 'center',
   },
   centerActions: {
     left: -1000
   },
   rightActionsVisible: {
-    right: 0
+    // right: 0
   },
   leftActionsVisible: {
-    left: 0
+    // left: 0
   },
   centerActionsVisible: {
     left: (DEVICE_WIDTH / 2) - 30

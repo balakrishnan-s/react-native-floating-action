@@ -136,7 +136,7 @@ FloatingActionItem.propTypes = {
   textElevation: PropTypes.number,
   textBackground: PropTypes.string,
   textColor: PropTypes.string,
-  onPress: PropTypes.func
+  onPress: PropTypes.func,
 };
 
 FloatingActionItem.defaultProps = {
