@@ -259,7 +259,7 @@ class FloatingAction extends Component {
             flex: 1,
           },
         ]}
-        pointerEvents="none">
+        pointerEvents="box-none">
           {this.renderActions()}
           {this.renderMainButton()}
         </View>
