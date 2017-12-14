@@ -11,8 +11,7 @@
 		"lodash": "^4.17.4",
 		"prop-types": "^15.5.10",
 		"react": "16.0.0-alpha.12",
-		"react-native": "0.48.4",
-		"react-native-floating-action": "^1.1.0"
+		"react-native": "0.48.4"
 	},
 	"devDependencies": {
 		"babel-jest": "20.0.3",

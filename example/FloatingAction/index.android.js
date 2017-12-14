@@ -5,10 +5,11 @@ import {
   FlatList,
   Alert,
   Text,
-  View
+  View,
+  Image
 } from 'react-native';
 
-import FloatingAction from './components/FloatingAction';
+import FloatingAction from './component/FloatingAction';
 
 class FloatingActionExample extends Component {
   constructor(props) {
@@ -45,27 +46,29 @@ class FloatingActionExample extends Component {
   render() {
     const { actionButtonVisible } = this.state;
 
-    const actions = [{
-      text: 'Accessibility',
-      icon: require('./images/ic_accessibility_white.png'),
-      name: 'bt_accessibility',
-      position: 2
-    }, {
-      text: 'Language',
-      icon: require('./images/ic_language_white.png'),
-      name: 'bt_language',
+    const actions =[{
+      name: "Accessibility",
+      icon: (
+        <View style={{
+          flexDirection: "row",
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+          <Text style={{color: "#FFFFFF", marginRight: 20}}>Testing</Text>
+          <View style={{
+            width: 50,
+            height: 50,
+            backgroundColor: "#0000FF",
+            borderRadius: 25,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <Image source={require('./images/ic_accessibility_white.png')}/>
+          </View>
+        </View>
+      ),
       position: 1
-    }, {
-      text: 'Location',
-      icon: require('./images/ic_room_white.png'),
-      name: 'bt_room',
-      position: 3
-    }, {
-      text: 'Video',
-      icon: require('./images/ic_videocam_white.png'),
-      name: 'bt_videocam',
-      position: 4
-    }];
+    }]
 
     return (
       <View style={styles.container}>
@@ -89,6 +92,8 @@ class FloatingActionExample extends Component {
         <FloatingAction
           actions={actions}
           visible={actionButtonVisible}
+          mainButtonStyle={styles.mainButtonStyle}
+          actionContainerStyle={styles.actionContainerStyle}
           onPressItem={
             (name) => {
               Alert.alert('Icon pressed', `the icon ${name} was pressed`);
@@ -120,6 +125,26 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     margin: 10
+  },
+  mainButtonStyle: {
+    position: "absolute",
+    right: 15,
+    bottom: 15,
+    width: 50,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius:  25,
+    backgroundColor: "#FF0000"
+  },
+  actionContainerStyle: {
+    position: "absolute",
+    right: 15,
+    bottom: 75,
+    flexDirection: "column",
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    borderRadius:  25,
   }
 });
 

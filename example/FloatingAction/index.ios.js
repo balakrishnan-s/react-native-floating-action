@@ -8,7 +8,7 @@ import {
   View
 } from 'react-native';
 
-import FloatingAction from './components/FloatingAction';
+import FloatingAction from './component/FloatingAction';
 
 class FloatingActionExample extends Component {
   constructor(props) {

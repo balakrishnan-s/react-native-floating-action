@@ -2,12 +2,14 @@ import React, { Component } from 'react'; // eslint-disable-line
 import PropTypes from 'prop-types';
 import { sortBy, isNil } from 'lodash';
 import {
+  View,
   StyleSheet,
   Image,
   Animated,
   Dimensions,
   TouchableOpacity,
-  LayoutAnimation
+  LayoutAnimation,
+  Text
 } from 'react-native';
 
 import FloatingActionItem from './FloatingActionItem';
@@ -120,7 +122,7 @@ class FloatingAction extends Component {
     const {
       buttonColor,
       position,
-      overrideWithAction
+      overrideWithAction,
     } = this.props;
 
     const animatedVisibleView = {
@@ -154,18 +156,27 @@ class FloatingAction extends Component {
 
     return (
       <Animated.View
-        style={[styles.buttonContainer, styles[`${position}Button`], { backgroundColor: buttonColor }, animatedVisibleView]}
+        style={[this.props.mainButtonStyle]}
       >
-        <Touchable
-          {...getRippleProps(buttonColor)}
-          style={styles.button}
-          activeOpacity={0.85}
+        <TouchableOpacity
+          style={{
+            flex: 1,
+            width: this.props.mainButtonStyle.width,
+            height: this.props.mainButtonStyle.height,
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+          activeOpacity={1}
           onPress={this.animateButton}
         >
-          <Animated.View style={[styles.buttonTextContainer, animatedViewStyle]}>
-            { this.getIcon() }
+          <Animated.View style={[animatedViewStyle, {
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center'
+          }]}>
+            {this.getIcon()}
           </Animated.View>
-        </Touchable>
+        </TouchableOpacity>
       </Animated.View>
     );
   }
@@ -176,7 +187,8 @@ class FloatingAction extends Component {
       position,
       overrideWithAction,
       actionsTextBackground,
-      actionsTextColor
+      actionsTextColor,
+      distanceToEdge,
     } = this.props;
     const { active } = this.state;
 
@@ -191,27 +203,29 @@ class FloatingAction extends Component {
       })
     };
 
-    const actionsStyles = [styles.actions, styles[`${position}Actions`], animatedActionsStyle];
+    const actionsStyles = [animatedActionsStyle];
 
     if (this.state.active) {
       actionsStyles.push(styles[`${position}ActionsVisible`]);
     }
 
     return (
-      <Animated.View style={actionsStyles} pointerEvents="box-none">
-        {
-          sortBy(actions, ['position']).map(action => (
-            <FloatingActionItem
-              key={action.name}
-              textColor={actionsTextColor}
-              textBackground={actionsTextBackground}
-              {...action}
-              position={position}
-              active={active}
-              onPress={this.handlePressItem}
-            />
-          ))
-        }
+      <Animated.View style={[actionsStyles, this.props.actionContainerStyle]} pointerEvents="box-none">
+        <View style={{
+          
+        }}>
+          {
+            sortBy(actions, ['position']).map(action => (
+              <FloatingActionItem
+                key={action.name}
+                icon={action.icon}
+                position={action.position}
+                active={active}
+                onPress={this.handlePressItem}
+              />
+            ))
+          }
+        </View>
       </Animated.View>
     );
   }
@@ -237,14 +251,16 @@ class FloatingAction extends Component {
       >
         {
           this.state.active &&
-            this.renderTappableBackground()
+          this.renderTappableBackground()
         }
-        {
-          this.renderActions()
-        }
-        {
-          this.renderMainButton()
-        }
+        <View style={[
+          {
+            flex: 1
+          },
+        ]}>
+          {this.renderActions()}
+          {this.renderMainButton()}
+        </View>
       </Animated.View>
     );
   }
@@ -266,7 +282,8 @@ FloatingAction.propTypes = {
   overlayColor: PropTypes.string,
   floatingIcon: PropTypes.any,
   overrideWithAction: PropTypes.bool, // use the first action like main action
-  onPressItem: PropTypes.func
+  onPressItem: PropTypes.func,
+  distanceToEdge: PropTypes.number
 };
 
 FloatingAction.defaultProps = {
@@ -274,31 +291,30 @@ FloatingAction.defaultProps = {
   visible: true,
   buttonColor: '#1253bc',
   overlayColor: 'rgba(68, 68, 68, 0.6)',
-  position: 'right'
+  position: 'right',
+  distanceToEdge: 15
 };
 
 const styles = StyleSheet.create({
   actions: {
     position: 'absolute',
-    bottom: 85,
+    width: 56,
     zIndex: 10
   },
   rightActions: {
-    alignItems: 'flex-end',
-    right: -1000 // this magic number will make always disspear the text from screen
+    alignItems: 'center',
   },
   leftActions: {
-    alignItems: 'flex-start',
-    left: -1000 // this magic number will make always disspear the text from screen
+    alignItems: 'center',
   },
   centerActions: {
     left: -1000
   },
   rightActionsVisible: {
-    right: 0
+    // right: 0
   },
   leftActionsVisible: {
-    left: 0
+    // left: 0
   },
   centerActionsVisible: {
     left: (DEVICE_WIDTH / 2) - 30
@@ -312,25 +328,6 @@ const styles = StyleSheet.create({
     elevation: 0,
     zIndex: 0
   },
-  buttonContainer: {
-    overflow: 'hidden',
-    zIndex: 2,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowOpacity: 0.35,
-    shadowOffset: {
-      width: 0,
-      height: 5
-    },
-    shadowColor: '#000000',
-    shadowRadius: 3,
-    elevation: 5,
-    position: 'absolute',
-    bottom: 30
-  },
   button: {
     zIndex: 3,
     width: 56,
@@ -339,22 +336,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  rightButton: {
-    right: 30
-  },
-  leftButton: {
-    left: 30
-  },
+  rightButton: {},
+  leftButton: {},
   centerButton: {
     left: (DEVICE_WIDTH / 2) - 28
-  },
-  buttonTextContainer: {
-    borderRadius: 28,
-    width: 56,
-    height: 56,
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
   },
   buttonIcon: {
     resizeMode: 'contain'

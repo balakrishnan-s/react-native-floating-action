@@ -40,7 +40,6 @@ class FloatingActionItem extends Component {
     };
 
     return (
-      this.props.active && 
       <TouchableOpacity activeOpacity={1} style={styles.container} onPress={this.handleOnPress}>
         <Animated.View style={[styles.actionContainer, animatedActionContainerStyle]}>
           {this.props.icon}

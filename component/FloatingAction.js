@@ -2,12 +2,14 @@ import React, { Component } from 'react'; // eslint-disable-line
 import PropTypes from 'prop-types';
 import { sortBy, isNil } from 'lodash';
 import {
+  View,
   StyleSheet,
   Image,
   Animated,
   Dimensions,
   TouchableOpacity,
-  LayoutAnimation
+  LayoutAnimation,
+  Text
 } from 'react-native';
 
 import FloatingActionItem from './FloatingActionItem';
@@ -121,7 +123,6 @@ class FloatingAction extends Component {
       buttonColor,
       position,
       overrideWithAction,
-      distanceToEdge
     } = this.props;
 
     const animatedVisibleView = {
@@ -152,25 +153,30 @@ class FloatingAction extends Component {
     }
 
     const Touchable = getTouchableComponent();
-    const propStyles = { backgroundColor: buttonColor, bottom: distanceToEdge };
-    if (['left', 'right'].indexOf(position) > -1) {
-      propStyles[position] = distanceToEdge;
-    }
 
     return (
       <Animated.View
-        style={[styles.buttonContainer, styles[`${position}Button`], propStyles, animatedVisibleView]}
+        style={[this.props.mainButtonStyle]}
       >
-        <Touchable
-          {...getRippleProps(buttonColor) }
-          style={styles.button}
-          activeOpacity={0.85}
+        <TouchableOpacity
+          style={{
+            flex: 1,
+            width: this.props.mainButtonStyle.width,
+            height: this.props.mainButtonStyle.height,
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+          activeOpacity={1}
           onPress={this.animateButton}
         >
-          <Animated.View style={[styles.buttonTextContainer, animatedViewStyle]}>
+          <Animated.View style={[animatedViewStyle, {
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center'
+          }]}>
             {this.getIcon()}
           </Animated.View>
-        </Touchable>
+        </TouchableOpacity>
       </Animated.View>
     );
   }
@@ -197,33 +203,30 @@ class FloatingAction extends Component {
       })
     };
 
-    const propStyles = { bottom: 56 };
-    if (['left', 'right'].indexOf(position) > -1) {
-      propStyles[position] = distanceToEdge;
-      propStyles.bottom = propStyles.bottom + distanceToEdge;
-    }
-
-    const actionsStyles = [styles.actions, styles[`${position}Actions`], animatedActionsStyle, propStyles];
+    const actionsStyles = [animatedActionsStyle];
 
     if (this.state.active) {
       actionsStyles.push(styles[`${position}ActionsVisible`]);
     }
 
     return (
-      <Animated.View style={actionsStyles} pointerEvents="box-none">
-        {
-          sortBy(actions, ['position']).map(action => (
-            <FloatingActionItem
-              key={action.name}
-              textColor={actionsTextColor}
-              textBackground={actionsTextBackground}
-              {...action}
-              position={position}
-              active={active}
-              onPress={this.handlePressItem}
-            />
-          ))
-        }
+      <Animated.View style={[actionsStyles, this.props.actionContainerStyle]} pointerEvents="box-none">
+        <View style={{
+          
+        }}>
+          {
+            sortBy(actions, ['position']).map(action => (
+              <FloatingActionItem
+                key={action.name}
+                name={action.name}
+                icon={action.icon}
+                position={action.position}
+                active={active}
+                onPress={this.handlePressItem}
+              />
+            ))
+          }
+        </View>
       </Animated.View>
     );
   }
@@ -251,12 +254,15 @@ class FloatingAction extends Component {
           this.state.active &&
           this.renderTappableBackground()
         }
-        {
-          this.renderActions()
-        }
-        {
-          this.renderMainButton()
-        }
+        <View style={[
+          {
+            flex: 1,
+          },
+        ]}
+        pointerEvents="none">
+          {this.renderActions()}
+          {this.renderMainButton()}
+        </View>
       </Animated.View>
     );
   }
@@ -265,8 +271,6 @@ class FloatingAction extends Component {
 FloatingAction.propTypes = {
   visible: PropTypes.bool,
   actions: PropTypes.arrayOf(PropTypes.shape({
-    buttonColor: PropTypes.string,
-    text: PropTypes.string,
     icon: PropTypes.any.isRequired,
     name: PropTypes.string.isRequired,
     position: PropTypes.number.isRequired
@@ -324,24 +328,6 @@ const styles = StyleSheet.create({
     elevation: 0,
     zIndex: 0
   },
-  buttonContainer: {
-    overflow: 'hidden',
-    zIndex: 2,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowOpacity: 0.35,
-    shadowOffset: {
-      width: 0,
-      height: 5
-    },
-    shadowColor: '#000000',
-    shadowRadius: 3,
-    elevation: 5,
-    position: 'absolute',
-  },
   button: {
     zIndex: 3,
     width: 56,
@@ -354,14 +340,6 @@ const styles = StyleSheet.create({
   leftButton: {},
   centerButton: {
     left: (DEVICE_WIDTH / 2) - 28
-  },
-  buttonTextContainer: {
-    borderRadius: 28,
-    width: 56,
-    height: 56,
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
   },
   buttonIcon: {
     resizeMode: 'contain'
