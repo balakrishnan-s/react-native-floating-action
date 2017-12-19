@@ -82,7 +82,7 @@ class FloatingAction extends Component {
 
     this.setState({
       active: false
-    });
+    }, () => { if (this.props.onActive) this.props.onActive(false); });
   };
 
   animateButton = () => {
@@ -112,7 +112,7 @@ class FloatingAction extends Component {
 
       this.setState({
         active: true
-      });
+      }, () => { if (this.props.onActive) this.props.onActive(true); });
     } else {
       this.reset();
     }
