@@ -43,7 +43,7 @@ class FloatingAction extends Component {
   }
 
   getIcon = () => {
-    const { actions, floatingIcon, overrideWithAction } = this.props;
+    const { actions, floatingIcon, overrideWithAction, closeIcon } = this.props;
 
     if (overrideWithAction) {
       const { icon } = actions[0];
@@ -56,11 +56,11 @@ class FloatingAction extends Component {
     }
 
     if (floatingIcon) {
-      if (React.isValidElement(floatingIcon)) {
-        return floatingIcon;
+      if (this.state.active == false) {
+        return <Image style={styles.buttonIcon} source={floatingIcon} />;
+      } else {
+        return <Image style={styles.buttonIcon} source={closeIcon} />;
       }
-
-      return <Image style={styles.buttonIcon} source={floatingIcon} />;
     }
 
     return <Image style={styles.buttonIcon} source={require('../images/add.png')} />;
